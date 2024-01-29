@@ -1,0 +1,94 @@
+.container {
+  padding: 0 2rem;
+  width: 100%;
+  background: radial-gradient(
+    50% 50% at 50% 50%,
+    #0a1013 0%,
+    #419d60 0.01%,
+    #1d3c38 54.63%,
+    #0a1013 100%
+  );
+}
+
+.main {
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0px;
+}
+.logo {
+  color: #94ffdf;
+  font-family: "DFVN MBF Space Habitat";
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 120%;
+}
+.actionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 16px;
+}
+.ju367v9h {
+  border-radius: 4px;
+  border: 1px solid #2b937a;
+  background: radial-gradient(2058.68% 50% at 50% 50%) !important;
+}
+.actionBtnConnet > .ju367v9h {
+  border-radius: 4px;
+  border: 1px solid var #2b937a;
+  background: radial-gradient(2058.68% 50% at 50% 50%);
+}
+.actionBtnConnet {
+  border-radius: 4px;
+  border: 1px solid #2b937a;
+  background: radial-gradient(2058.68% 50% at 50% 50%);
+}
+.actionBtnSelect {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  border-radius: 4px;
+  border: 1px solid #2b937a;
+  padding: 12px 12px 12px 13px;
+  gap: 10px;
+}
+.actionBtnSelectLang {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  background: radial-gradient(
+      2058.68% 50% at 50% 50%,
+      rgba(43, 147, 122, 0.1) 0%,
+      rgba(43, 147, 122, 0) 100%
+    );
+  color: #fff;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+  font-family: Lexend;
+  outline: none;
+}
+.actionBtnOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: none;
+}
+
+/* content */
+.homeContent{
+
+}
+
+@media (max-width: 600px) {
+  .grid {
+    width: 100%;
+    flex-direction: column;
+  }
+}
