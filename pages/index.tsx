@@ -5,34 +5,71 @@ import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import img1 from "../public/images/ru.svg";
 import img2 from "../public/images/left.svg";
+import img3 from "../public/images/Interface.svg";
+import img4 from "../public/images/Gem.png";
+import React, { useState } from "react";
+import Select from 'react-select';
 
 const Home: NextPage = () => {
+  const [showSubtitle, setShowSubtitle] = useState(false);
   const itemList = [
     {
       id: 1,
       label:
         "No KYC Required: Enjoy transfer coins transactions between accounts without the hassle.",
-      iconSrc: "../public/images/ru.svg",
+      iconSrc: img3,
     },
     {
       id: 2,
       label:
-        "No KYC Required: Enjoy transfer coins transactions between accounts without the hassle.",
-      iconSrc: "/icons/icon2.png",
+        "Deposit ATH to Athene Gaming and Athene Prediction: Immerse yourself in the gaming world like never before.",
+      iconSrc: img3,
     },
     {
       id: 3,
-      label:
-        "No KYC Required: Enjoy transfer coins transactions between accounts without the hassle.",
-      iconSrc: "/icons/icon3.png",
+      label: "Increase the Booster Coefficient by 30% on the Athene App.",
+      iconSrc: img3,
+    },
+    {
+      id: 4,
+      label: " And many more special benefits to elevate your experience.",
+      iconSrc: img3,
+    },
+  ];
+  const itemListGem = [
+    {
+      id: 1,
+      label: "F1: $1/ref",
+      iconSrc: img4,
+    },
+    {
+      id: 2,
+      label: "F2: $0.5/ref",
+      iconSrc: img4,
+    },
+  ];
+  const itemListPurchase = [
+    {
+      id: 1,
+      label: "1. Connect your wallet by clicking the button 'Connect Wallet'",
+    },
+    {
+      id: 2,
+      label: "2. Enter your Athene account (your email)",
+    },
+    {
+      id: 3,
+      label: "3. Click the 'Buy Premium' button and confirm the transaction",
     },
     {
       id: 4,
       label:
-        "No KYC Required: Enjoy transfer coins transactions between accounts without the hassle.",
-      iconSrc: "/icons/icon4.png",
+        "4. The system will automatically process transactions and update your account's Premium Package.",
     },
   ];
+  const handleClick = () => {
+    setShowSubtitle(!showSubtitle);
+  };
   return (
     <div className={styles.container}>
       <Head>
@@ -55,8 +92,8 @@ const Home: NextPage = () => {
             <div className={styles.actionBtnSelect}>
               <select className={styles.actionBtnSelectLang} name="" id="">
                 <option className={styles.actionBtnOption} value="">
-                  <div>{/* <Image src={img1} alt="picture" /> */}</div>
-                  <div>Việt Nam</div>
+                  <Image src={img1} alt="picture" />
+                  <span>Việt Nam</span>
                 </option>
                 <option className={styles.actionBtnOption} value="">
                   English
@@ -89,11 +126,18 @@ const Home: NextPage = () => {
           <div className={styles.homeContentChooie}>
             <ul>
               {itemList.map((item, index) => (
-                <li key={item.id}>
-                  <div>
-                    <img src={item.iconSrc} alt={item.label} />
+                <li key={item.id} className={styles.homeContentChooieItem}>
+                  <Image
+                    src={item.iconSrc}
+                    alt="picture"
+                    layout="fixed"
+                    width={16}
+                    height={16}
+                    className={styles.homeContentChooieImage}
+                  />
+                  <div className={styles.homeContentChooieItemText}>
+                    {item.label}
                   </div>
-                  <div>{item.label}</div>
                 </li>
               ))}
             </ul>
@@ -102,28 +146,83 @@ const Home: NextPage = () => {
             For every user you introduce who purchases the Premium Package,
             you'll earn fantastic commissions
           </div>
-          <div>
+          <div className={styles.homeContentGemItem}>
             <ul>
-              {itemList.map((item, index) => (
-                <li key={item.id}>
-                  <div>
-                    <img src={item.iconSrc} alt={item.label} />
+              {itemListGem.map((item, index) => (
+                <li key={item.id} className={styles.homeContentGemItemMain}>
+                  <Image
+                    src={item.iconSrc}
+                    alt="picture"
+                    layout="fixed"
+                    width={16}
+                    height={16}
+                    className={styles.homeContentChooieImage}
+                  />
+                  <div className={styles.homeContentGemItemText}>
+                    {item.label}
                   </div>
-                  <div>{item.label}</div>
                 </li>
               ))}
             </ul>
           </div>
           <div className={styles.homeContentPurchase}>
-            <div>
-
+            <div className={styles.homeContentPurchaseContainer}>
+              <div>
+                <div
+                  className={styles.homeContentPurchaseMain}
+                  onClick={handleClick}
+                >
+                  <div className={styles.homeContentPurchaseTitle}>
+                    How to purchase?
+                  </div>
+                  <Image
+                    src={img2}
+                    alt="picture"
+                    layout="fixed"
+                    width={16}
+                    height={16}
+                    className={styles.homeContentChooieImage}
+                  />
+                </div>
+              </div>
+              {showSubtitle && (
+                <div className={styles.homeContentPurchaseSubTitle}>
+                  <div className={styles.homeContentPurchaseSubTitleItem}>
+                    {itemListPurchase.map((item, index) => (
+                      <li
+                        key={item.id}
+                        className={styles.homeContentPurchaseSubTitleMain}
+                      >
+                        <div className={styles.homeContentPurchaseSubTitleText}>
+                          {item.label}
+                        </div>
+                      </li>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-            <div>
-              <img src="../assets/images/Chevron_Left.svg" alt="" />
-            </div>
-            <div>12312312</div>
-
           </div>
+          <div className={styles.homeContentSubmit}>
+            <div className={styles.homeContentSubmitContainer}>
+              <input
+                className={styles.homeContentSubmitInput}
+                placeholder="Thiquynhnguyenptit@gmail.com"
+                type="text"
+              />
+              <div>
+                <button className={styles.homeContentSubmitBtn}>
+                  BUY PREMIUM
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className={styles.homeContentTextEnd}>
+          THANK YOU FOR CHOOSING ATHENE NETWORK!
+        </div>
+        <div className={styles.homeFooter}>
+          2024 Athene Group LTD. | All rights reserved.
         </div>
       </main>
     </div>
