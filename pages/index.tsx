@@ -8,10 +8,24 @@ import img2 from "../public/images/left.svg";
 import img3 from "../public/images/Interface.svg";
 import img4 from "../public/images/Gem.png";
 import React, { useState } from "react";
-import Select from 'react-select';
+import { useTranslation } from "react-i18next";
+import CustomSelect from "../components/CustomSelect";
+import ModalSmartContract from "../components/ModalSmartContract";
+
 
 const Home: NextPage = () => {
+  const { t } = useTranslation();
   const [showSubtitle, setShowSubtitle] = useState(false);
+  const [email, setEmail] = useState("123@gmail.com");
+  const [error, setError] = useState("");
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => {
+    setModalOpen(true);
+  };
+  const handleClickClose = () => {
+    setModalOpen(false);
+  };
   const itemList = [
     {
       id: 1,
@@ -67,9 +81,32 @@ const Home: NextPage = () => {
         "4. The system will automatically process transactions and update your account's Premium Package.",
     },
   ];
+
+  const handleInputChange = (event) => {
+    setEmail(event.target.value);
+    setError("");
+  };
+
+  const handleButtonClick = () => {
+    if (!isValidEmail(email)) {
+      setError("Invalid email address");
+      return;
+    }
+    openModal()
+    console.log(123123123);
+    
+  };
   const handleClick = () => {
     setShowSubtitle(!showSubtitle);
   };
+  const handleChange = (selectedOption) => {
+    console.log(`Selected: ${selectedOption.label}`);
+  };
+  const isValidEmail = (value) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(value);
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -87,30 +124,10 @@ const Home: NextPage = () => {
           <div className={styles.logo}>Athene</div>
           <div className={styles.actionBtn}>
             <div className={styles.actionBtnConnet}>
-              <ConnectButton label="Connect Wallet" />
+              <ConnectButton label="Connect Wallet" accountStatus="address" />
             </div>
             <div className={styles.actionBtnSelect}>
-              <select className={styles.actionBtnSelectLang} name="" id="">
-                <option className={styles.actionBtnOption} value="">
-                  <Image src={img1} alt="picture" />
-                  <span>Việt Nam</span>
-                </option>
-                <option className={styles.actionBtnOption} value="">
-                  English
-                </option>
-                <option className={styles.actionBtnOption} value="">
-                  Đức
-                </option>
-                <option className={styles.actionBtnOption} value="">
-                  English
-                </option>
-                <option className={styles.actionBtnOption} value="">
-                  English
-                </option>
-              </select>
-              <div>
-                <Image src={img2} alt="" />
-              </div>
+              <CustomSelect onChange={handleChange} />
             </div>
           </div>
         </div>
@@ -147,7 +164,7 @@ const Home: NextPage = () => {
             you'll earn fantastic commissions
           </div>
           <div className={styles.homeContentGemItem}>
-            <ul>
+            <div>
               {itemListGem.map((item, index) => (
                 <li key={item.id} className={styles.homeContentGemItemMain}>
                   <Image
@@ -163,15 +180,15 @@ const Home: NextPage = () => {
                   </div>
                 </li>
               ))}
-            </ul>
+            </div>
           </div>
           <div className={styles.homeContentPurchase}>
-            <div className={styles.homeContentPurchaseContainer}>
+            <div
+              className={styles.homeContentPurchaseContainer}
+              onClick={handleClick}
+            >
               <div>
-                <div
-                  className={styles.homeContentPurchaseMain}
-                  onClick={handleClick}
-                >
+                <div className={styles.homeContentPurchaseMain}>
                   <div className={styles.homeContentPurchaseTitle}>
                     How to purchase?
                   </div>
@@ -209,13 +226,21 @@ const Home: NextPage = () => {
                 className={styles.homeContentSubmitInput}
                 placeholder="Thiquynhnguyenptit@gmail.com"
                 type="text"
+                value={email}
+                onChange={handleInputChange}
               />
               <div>
-                <button className={styles.homeContentSubmitBtn}>
+                <button
+                  className={styles.homeContentSubmitBtn}
+                  onClick={handleButtonClick}
+                >
                   BUY PREMIUM
                 </button>
               </div>
             </div>
+            {error && (
+              <p className={styles.homeContentError}>{error}</p>
+            )}
           </div>
         </div>
         <div className={styles.homeContentTextEnd}>
@@ -224,6 +249,7 @@ const Home: NextPage = () => {
         <div className={styles.homeFooter}>
           2024 Athene Group LTD. | All rights reserved.
         </div>
+      <ModalSmartContract isModalOpen={isModalOpen} onClickClose={handleClickClose}/>
       </main>
     </div>
   );

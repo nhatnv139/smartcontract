@@ -1,0 +1,13 @@
+.selectLangue {
+  display: flex;
+  gap: 10px;
+  
+  background:
+    radial-gradient(
+      2058.68% 50% at 50% 50%,
+      rgba(43, 147, 122, 0.1) 0%,
+      rgba(43, 147, 122, 0) 100%
+    ),
+    #0a1013;
+    color: #fff;
+}
