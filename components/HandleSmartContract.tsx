@@ -1,72 +1,81 @@
 // MyComponent.js
-import React, { useState } from "react";
-import Web3 from "web3";
+import { useEffect, useState } from 'react';
+import { ethers } from 'ethers';
 import ABI from "../public/locale/ABI.json";
-import { log } from "console";
-
 const HandleSmartContract = () => {
-  const [contractAddress, setContractAddress] = useState(
-    "0x6f14fB077636e71df457158B1589B5fE4c50f223"
-  );
+  const [provider, setProvider] = useState(null);
+  const [signer, setSigner] = useState(null);
+  const [accounts, setAccounts] = useState([]);
+  const [contract, setContract] = useState(null);
+  const [owner, setOwner] = useState('');
+  const [packageId, setPackageId] = useState(1);
+  const [accountEmail, setAccountEmail] = useState('123@example.com');
 
-  const [contractAbi, setContractAbi] = useState(ABI);
-  const [tokenAddress, setTokenAddress] = useState(
-    "0x68Ea978Fe22BaBa155De4E3E61Be9e07583a682E"
-  );
-  const [ownerAddress, setOwnerAddress] = useState("");
-  const [isOwner, setIsOwner] = useState(false);
+  useEffect(() => {
+    const initEthers = async () => {
+      try {
+        // Khởi tạo Ethereum provider
+        const ethProvider = new ethers.providers.JsonRpcProvider('https://bsc-testnet.blockpi.network/v1/rpc/public');
+        setProvider(ethProvider);
+        console.log(1231231,ethProvider);
 
-  const checkOwnership = async () => {
+        // Lấy địa chỉ chủ sở hữu và địa chỉ contract từ smart contract
+        const contractAddress = '0x1C674CBBAAE98dB354528cD96767C996Eb49d8e5';
+        const contractAbi = ABI;
+        const ethSigner = new ethers.Contract(contractAddress, contractAbi, ethProvider);
+        const contractOwner = await ethSigner.owner();
+        setOwner(contractOwner);
+        setSigner(ethProvider.getSigner());
+        setContract(ethSigner);
+        console.log(9999,ethProvider.getSigner());
+        console.log(2222,contractOwner);
+      } catch (error) {
+        console.error('Lỗi kết nối Ethers:', error.message);
+      }
+    };
+
+    initEthers();
+  }, []);
+
+  const checkAllowance = async (spender, amount) => {
     try {
-      const web3 = new Web3(window.ethereum);
-      console.log(666,contractAbi);
-
-      const contract = new web3.eth.Contract(contractAbi, contractAddress);
-      console.log(999,contract);
-
-      const owner = await contract.methods.owner().call();
-
-      console.log(32333,contract);
-      const isOwner = owner === window.ethereum.selectedAddress;
-      
-
-      setOwnerAddress(owner);
-      setIsOwner(isOwner);
+      // Kiểm tra allowance từ smart contract
+      const allowance = await contract.checkAllowance(spender, amount);
+      return allowance;
     } catch (error) {
-      console.error("Error:", error.message);
+      console.error('Lỗi kiểm tra allowance:', error.message);
+      return false;
     }
   };
 
-  const withdrawFunds = async () => {
-    try {
-      const web3 = new Web3(window.ethereum);
+  const buyPremium = async () => {
+    const spender = '0x1C674CBBAAE98dB354528cD96767C996Eb49d8e5'; // Địa chỉ của tài khoản quản lý chi trả token
+    const requiredAllowance = 0; // Số lượng token cần kiểm tra allowance
 
-      if (!isOwner) {
-        console.error("You are not the owner. Cannot withdraw funds.");
+    try {
+      // Kiểm tra allowance
+      const isAllowanceEnough = await checkAllowance(spender, requiredAllowance);
+      console.log(333666,isAllowanceEnough);
+
+      if (!isAllowanceEnough) {
+        console.log('Allowance không đủ. Không thể mua gói premium.');
         return;
       }
 
-      const contract = new web3.eth.Contract(contractAbi, contractAddress);
-
-      // Gọi phương thức trong smart contract để thực hiện rút tiền
-      const result = await contract.methods
-        .withdrawFunds()
-        .send({ from: window.ethereum.selectedAddress });
-
-      console.log("Withdrawal successful:", result);
+      // Nếu allowance đủ, thực hiện mua gói premium
+      const result = await contract.buyPremium(packageId, accountEmail);
+      console.log('Gói premium đã được mua thành công:', result);
     } catch (error) {
-      console.error("Error:", error.message);
+      console.error('Lỗi mua gói premium:', error.message);
     }
   };
 
   return (
     <div>
-      <h2>Smart Contract Interaction</h2>
-      <p>Contract Address: {contractAddress}</p>
-      <p>Token Address: {tokenAddress}</p>
-      <button onClick={checkOwnership}>Check Ownership</button>
-      <p>Owner Address: {ownerAddress}</p>
-      {isOwner && <button onClick={withdrawFunds}>Withdraw Funds</button>}
+      <h1>Next.js Web3 Example</h1>
+      <p>Địa chỉ tài khoản: {accounts[0]}</p>
+      <p>Địa chỉ chủ sở hữu: {owner}</p>
+      <button onClick={buyPremium}>Mua Gói Premium</button>
     </div>
   );
 };
