@@ -11,7 +11,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import CustomSelect from "../components/CustomSelect";
 import ModalSmartContract from "../components/ModalSmartContract";
-
+import axios from "../api/index";
 
 const Home: NextPage = () => {
   const { t } = useTranslation();
@@ -81,7 +81,23 @@ const Home: NextPage = () => {
         "4. The system will automatically process transactions and update your account's Premium Package.",
     },
   ];
+  const fetchCheckEmailData =async()=> {
+    try {
+      const response = await axios.post("api/v1.0/site-wallet/check-email", {
+        email: email,
+      }); 
+      // if(response.data ===true){
+        // openModal();
+      // }
+      // else{
 
+      // }
+
+      console.log("Data:", response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  }
   const handleInputChange = (event) => {
     setEmail(event.target.value);
     setError("");
@@ -92,9 +108,11 @@ const Home: NextPage = () => {
       setError("Invalid email address");
       return;
     }
-    openModal()
+    fetchCheckEmailData()
+    openModal();
+   
+   
     console.log(123123123);
-    
   };
   const handleClick = () => {
     setShowSubtitle(!showSubtitle);
@@ -238,9 +256,7 @@ const Home: NextPage = () => {
                 </button>
               </div>
             </div>
-            {error && (
-              <p className={styles.homeContentError}>{error}</p>
-            )}
+            {error && <p className={styles.homeContentError}>{error}</p>}
           </div>
         </div>
         <div className={styles.homeContentTextEnd}>
@@ -249,7 +265,10 @@ const Home: NextPage = () => {
         <div className={styles.homeFooter}>
           2024 Athene Group LTD. | All rights reserved.
         </div>
-      <ModalSmartContract isModalOpen={isModalOpen} onClickClose={handleClickClose}/>
+        <ModalSmartContract
+          isModalOpen={isModalOpen}
+          onClickClose={handleClickClose}
+        />
       </main>
     </div>
   );

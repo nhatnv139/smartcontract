@@ -23,6 +23,8 @@ import {
 } from "wagmi/chains";
 import { publicProvider } from "wagmi/providers/public";
 import i18next from "./i18n";
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 const inter = Lexend({ subsets: ["latin"] });
 
@@ -92,6 +94,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           font-family: ${inter.style.fontFamily};
         }
       `}</style>
+      
       <WagmiConfig config={wagmiConfig}>
         <RainbowKitProvider chains={chains} theme={midnightTheme()}>
           <Component {...pageProps} />

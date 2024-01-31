@@ -1,81 +1,107 @@
 // MyComponent.js
-import { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
-import ABI from "../public/locale/ABI.json";
+import { useEffect, useState } from "react";
+import { ethers } from "ethers";
+import buyAbi from "../public/locale/buyAbi.json";
+import tokenAbi from "../public/locale/tokenAbi.json";
+import BigNumber from 'bignumber.js';
+
 const HandleSmartContract = () => {
+  const buyContractAddress = "0x8CA19c8B4cB13eC323A1E64A9c1455762255e705";
+  const tokenContractAddress = "0x68Ea978Fe22BaBa155De4E3E61Be9e07583a682E";
+  const buyContractAbi = buyAbi;
+  const tokenContractAbi = tokenAbi;
   const [provider, setProvider] = useState(null);
   const [signer, setSigner] = useState(null);
-  const [accounts, setAccounts] = useState([]);
-  const [contract, setContract] = useState(null);
-  const [owner, setOwner] = useState('');
+  const [buyPrice, setBuyPrice] = useState([]);
+  const [allowancePrice, setAlowancePrice] = useState([]);
+  const [buyContract, setBuyContract] = useState(null);
+  const [tokenContract, setTokenContract] = useState(null);
+  const [owner, setOwner] = useState("");
   const [packageId, setPackageId] = useState(1);
-  const [accountEmail, setAccountEmail] = useState('123@example.com');
+  const [accountEmail, setAccountEmail] = useState("huhu12123@gmail.com");
 
   useEffect(() => {
     const initEthers = async () => {
       try {
-        // Khởi tạo Ethereum provider
-        const ethProvider = new ethers.providers.JsonRpcProvider('https://bsc-testnet.blockpi.network/v1/rpc/public');
+        const ethProvider = new ethers.providers.Web3Provider(window.ethereum);
         setProvider(ethProvider);
-        console.log(1231231,ethProvider);
+        await window.ethereum.enable();
+        const signer = await ethProvider.getSigner();
+        const signerAddress = await signer.getAddress();
+        setSigner(signerAddress);
 
-        // Lấy địa chỉ chủ sở hữu và địa chỉ contract từ smart contract
-        const contractAddress = '0x1C674CBBAAE98dB354528cD96767C996Eb49d8e5';
-        const contractAbi = ABI;
-        const ethSigner = new ethers.Contract(contractAddress, contractAbi, ethProvider);
-        const contractOwner = await ethSigner.owner();
+        const ethSignerBuyContract = new ethers.Contract(
+          buyContractAddress,
+          buyContractAbi,
+          ethProvider
+        ).connect(ethProvider.getSigner());
+        setBuyContract(ethSignerBuyContract);
+        const getpackagePrices = await ethSignerBuyContract.packagePrices(
+          packageId
+        );
+
+        const decimals = await ethSignerBuyContract.getDecimals();
+        setBuyPrice(
+          parseInt(getpackagePrices?._hex, 16) *
+            Math.pow(10, parseInt(decimals?._hex, 16))
+        );
+        const ethSignerTokenContract = new ethers.Contract(
+          tokenContractAddress,
+          tokenContractAbi,
+          ethProvider
+        ).connect(ethProvider.getSigner());
+        setTokenContract(ethSignerTokenContract);
+        console.log(ethSignerTokenContract);
+
+        const contractOwner = await ethSignerBuyContract.owner();
         setOwner(contractOwner);
-        setSigner(ethProvider.getSigner());
-        setContract(ethSigner);
-        console.log(9999,ethProvider.getSigner());
-        console.log(2222,contractOwner);
       } catch (error) {
-        console.error('Lỗi kết nối Ethers:', error.message);
+        console.error("Lỗi kết nối Ethers:", error.message);
       }
     };
 
     initEthers();
   }, []);
 
-  const checkAllowance = async (spender, amount) => {
+  const checkAllowance = async () => {
     try {
-      // Kiểm tra allowance từ smart contract
-      const allowance = await contract.checkAllowance(spender, amount);
-      return allowance;
-    } catch (error) {
-      console.error('Lỗi kiểm tra allowance:', error.message);
-      return false;
-    }
-  };
+      const allowance = await tokenContract.allowance(
+        signer,
+        tokenContractAddress
+      );
+      setAlowancePrice(allowance?._hex);
+      console.log(1, buyPrice);
+      console.log(2, allowancePrice);
+      console.log(2, new BigNumber(allowancePrice));
+      if (buyPrice <= allowancePrice) {
+        await buyContract.buyPremium(packageId, accountEmail);
 
-  const buyPremium = async () => {
-    const spender = '0x1C674CBBAAE98dB354528cD96767C996Eb49d8e5'; // Địa chỉ của tài khoản quản lý chi trả token
-    const requiredAllowance = 0; // Số lượng token cần kiểm tra allowance
-
-    try {
-      // Kiểm tra allowance
-      const isAllowanceEnough = await checkAllowance(spender, requiredAllowance);
-      console.log(333666,isAllowanceEnough);
-
-      if (!isAllowanceEnough) {
-        console.log('Allowance không đủ. Không thể mua gói premium.');
-        return;
+        console.log(444433333333);
+        // console.log(rest);
+      } else {
+        await tokenContract.approve(buyContractAddress, buyPrice.toString());
+        // setAlowancePrice(parseInt(allowance?._hex, 16));
+        // console.log(3,parseInt(allowance?._hex, 16));
+        
+        console.log(9999, allowancePrice);
+        // setAlowancePrice(parseInt(allowance?._hex, 16));
+        // console.log(12312, buyContract);
       }
-
-      // Nếu allowance đủ, thực hiện mua gói premium
-      const result = await contract.buyPremium(packageId, accountEmail);
-      console.log('Gói premium đã được mua thành công:', result);
     } catch (error) {
-      console.error('Lỗi mua gói premium:', error.message);
+      console.error("Lỗi kiểm tra allowance:", error.message);
+      return false;
     }
   };
 
   return (
     <div>
       <h1>Next.js Web3 Example</h1>
-      <p>Địa chỉ tài khoản: {accounts[0]}</p>
+      <p>Địa chỉ tài khoản: {tokenContractAddress}</p>
       <p>Địa chỉ chủ sở hữu: {owner}</p>
-      <button onClick={buyPremium}>Mua Gói Premium</button>
+      <p>buyAllowance: {buyPrice}</p>
+      <p>currentAlowance: {allowancePrice}</p>
+
+      <button onClick={checkAllowance}>Buy Package</button>
     </div>
   );
 };
