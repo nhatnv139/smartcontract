@@ -11,6 +11,10 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import CustomSelect from "../components/CustomSelect";
 import ModalSmartContract from "../components/ModalSmartContract";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
 import axios from "../api/index";
 
 const Home: NextPage = () => {
@@ -23,7 +27,7 @@ const Home: NextPage = () => {
   const openModal = () => {
     setModalOpen(true);
   };
-  const handleClickClose = () => {
+  const handleCloseModal = () => {
     setModalOpen(false);
   };
   const itemList = [
@@ -81,23 +85,24 @@ const Home: NextPage = () => {
         "4. The system will automatically process transactions and update your account's Premium Package.",
     },
   ];
-  const fetchCheckEmailData =async()=> {
+  const fetchCheckEmailData = async () => {
     try {
       const response = await axios.post("api/v1.0/site-wallet/check-email", {
         email: email,
-      }); 
-      // if(response.data ===true){
-        // openModal();
-      // }
-      // else{
-
-      // }
+      });
+      if (response.data.data === true) {
+        toast.success(" You have successfully confirmed your email!");
+        openModal();
+      } else {
+        console.log(987);
+        toast.error("Your email is not correct");
+      }
 
       console.log("Data:", response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  }
+  };
   const handleInputChange = (event) => {
     setEmail(event.target.value);
     setError("");
@@ -108,10 +113,9 @@ const Home: NextPage = () => {
       setError("Invalid email address");
       return;
     }
-    fetchCheckEmailData()
-    openModal();
-   
-   
+    fetchCheckEmailData();
+    // openModal();
+
     console.log(123123123);
   };
   const handleClick = () => {
@@ -137,7 +141,6 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        {/* header */}
         <div className={styles.header}>
           <div className={styles.logo}>Athene</div>
           <div className={styles.actionBtn}>
@@ -266,8 +269,11 @@ const Home: NextPage = () => {
           2024 Athene Group LTD. | All rights reserved.
         </div>
         <ModalSmartContract
-          isModalOpen={isModalOpen}
-          onClickClose={handleClickClose}
+          isOpen={isModalOpen}
+          onCloseModal={handleCloseModal}
+          propsEmail={email}
+          emitCloseModal={handleCloseModal}
+          
         />
       </main>
     </div>
