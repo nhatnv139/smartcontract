@@ -77,15 +77,20 @@ export default function BasicModal({
   }, []);
   function extractCode(inputString) {
     const regex = /code=([A-Z_]+)/;
+    const allowanceRegex = /reading 'allowance'/i;
     const match = inputString.match(regex);
+    const allowanceMatch = inputString.match(allowanceRegex);
     if (match && match[1]) {
-      return match[1]; 
+      return match[1];
+    } else if (allowanceMatch) {
+      return "allowance";
     } else {
-      return null; 
+      return null;
     }
   }
 
-  const handelBuyPackage = async () => {
+  const handelBuyPackage = async (e) => {
+    // e.preventDefault();
     try {
       let allowance = await tokenContract.allowance(
         signer,
@@ -124,9 +129,17 @@ export default function BasicModal({
       console.error("Lỗi kiểm tra allowance:", error.message);
       const codeValue = extractCode(error.message);
       console.log(11, codeValue);
-      if (codeValue === "ACTION_REJECTED") {
+      if (
+        codeValue === "ACTION_REJECTED" ||
+        codeValue === "UNPREDICTABLE_GAS_LIMIT"
+      ) {
         emitCloseModal();
-        return
+        return;
+      }
+      if(codeValue === "allowance"){
+        toast.error("Allowance Error");
+        emitCloseModal();
+        return;
       } else {
         setTimeout(async () => {
           await handelBuyPackage();

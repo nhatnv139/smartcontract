@@ -4,6 +4,8 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
 import logo from "../public/images/logopc.png";
+import logomb from "../public/images/logomb.png";
+
 import img2 from "../public/images/left.svg";
 import img3 from "../public/images/Interface.svg";
 import img4 from "../public/images/Gem.png";
@@ -148,6 +150,13 @@ const Home: NextPage = () => {
               layout="fixed"
             />
           </div>
+          <div className={styles.logomb}>
+            <Image
+              src={logomb}
+              alt="picture"
+              layout="fixed"
+            />
+          </div>
           <div className={styles.actionBtn}>
             <div className={styles.actionBtnConnet}>
               <ConnectButton label="Connect Wallet" accountStatus="address" />
@@ -265,6 +274,27 @@ const Home: NextPage = () => {
               </div>
             </div>
             {error && <p className={styles.homeContentError}>{error}</p>}
+          </div>
+          <div className={styles.homeContentSubmitMb}>
+            <div className={styles.homeContentSubmitContainerMb}>
+              <input
+                className={styles.homeContentSubmitInputMb}
+                placeholder="Thiquynhnguyenptit@gmail.com"
+                type="text"
+                value={email}
+                onChange={handleInputChange}
+              />
+               {error && <p className={styles.homeContentErrorMb}>{error}</p>}
+              <div>
+                <button
+                  className={styles.homeContentSubmitBtnMb}
+                  onClick={handleButtonClick}
+                >
+                  BUY PREMIUM
+                </button>
+              </div>
+            </div>
+           
           </div>
         </div>
         <div className={styles.homeContentTextEnd}>
