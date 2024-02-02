@@ -3,7 +3,7 @@ import Image from "next/image";
 import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-import img1 from "../public/images/ru.svg";
+import logo from "../public/images/logopc.png";
 import img2 from "../public/images/left.svg";
 import img3 from "../public/images/Interface.svg";
 import img4 from "../public/images/Gem.png";
@@ -13,7 +13,6 @@ import CustomSelect from "../components/CustomSelect";
 import ModalSmartContract from "../components/ModalSmartContract";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 
 import axios from "../api/index";
 
@@ -142,7 +141,13 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <div className={styles.header}>
-          <div className={styles.logo}>Athene</div>
+          <div className={styles.logo}>
+            <Image
+              src={logo}
+              alt="picture"
+              layout="fixed"
+            />
+          </div>
           <div className={styles.actionBtn}>
             <div className={styles.actionBtnConnet}>
               <ConnectButton label="Connect Wallet" accountStatus="address" />
@@ -217,8 +222,8 @@ const Home: NextPage = () => {
                     src={img2}
                     alt="picture"
                     layout="fixed"
-                    width={16}
-                    height={16}
+                    width={24}
+                    height={24}
                     className={styles.homeContentChooieImage}
                   />
                 </div>
@@ -273,7 +278,6 @@ const Home: NextPage = () => {
           onCloseModal={handleCloseModal}
           propsEmail={email}
           emitCloseModal={handleCloseModal}
-          
         />
       </main>
     </div>

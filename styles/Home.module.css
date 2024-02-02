@@ -1,5 +1,5 @@
 .container {
-  padding: 0 2rem;
+  padding: 30px 2rem;
   width: 100%;
   background: radial-gradient(
     50% 50% at 50% 50%,
@@ -280,4 +280,47 @@
   font-weight: 400;
   line-height: 150%;
   color: #9aa7a4;
+}
+@media only screen and (max-width: 600px) {
+  .container {
+    padding: 30px 20px;
+  }
+  .homeContentTitle {
+    font-size: 32px;
+  }
+  .homeContentSub {
+    max-width: 316px;
+    font-size: 14px;
+  }
+  .homeContentChooie {
+    width: 100%;
+    border-radius: 4px;
+    background: #131d20;
+    padding: 26px 10px 30px 0px;
+  }
+  .homeContentChooieItemText {
+    font-size: 16px;
+  }
+  .homeContentGemTitle {
+    width: 100%;
+    font-size: 14px;
+  }
+  .homeContentPurchase {
+    font-size: 20px;
+  }
+  .homeContentPurchaseContainer {
+    padding: 16px;
+  }
+  .homeContentPurchaseSubTitleItem {
+    margin-top: 16px;
+  }
+  .homeContentTextEnd {
+    font-size: 20px;
+    padding: 20px 0px 28px 0px;
+    font-weight: 700;
+    line-height: 140%;
+  }
+  .homeFooter {
+    padding: 27px 0px 0px;
+  }
 }

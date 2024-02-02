@@ -75,6 +75,15 @@ export default function BasicModal({
 
     initEthers();
   }, []);
+  function extractCode(inputString) {
+    const regex = /code=([A-Z_]+)/;
+    const match = inputString.match(regex);
+    if (match && match[1]) {
+      return match[1]; 
+    } else {
+      return null; 
+    }
+  }
 
   const handelBuyPackage = async () => {
     try {
@@ -110,12 +119,21 @@ export default function BasicModal({
         }
       }
     } catch (error) {
+      console.log(error.message);
+      console.log(1, typeof error.message);
       console.error("Lỗi kiểm tra allowance:", error.message);
-      setTimeout(async () => {
-        await handelBuyPackage();
-      }, 5000);
+      const codeValue = extractCode(error.message);
+      console.log(11, codeValue);
+      if (codeValue === "ACTION_REJECTED") {
+        emitCloseModal();
+        return
+      } else {
+        setTimeout(async () => {
+          await handelBuyPackage();
+        }, 5000);
 
-      console.log(5555, "đang  gọi tieeps");
+        console.log(5555, "đang  gọi tieeps");
+      }
 
       return false;
     }
